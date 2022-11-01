@@ -93,27 +93,33 @@ public class RandomTeleportCommand implements CommandExecutor {
                     "preset", preset, "perm",
                     "randomteleport.presets." + preset
             );
-        } else if (sender != target && !sender.hasPermission("randomteleport.tpothers")) {
+            return;
+        }
+        if (sender != target && !sender.hasPermission("randomteleport.tpothers")) {
             plugin.sendMessage(sender, "error.no-permission.tp-others", "perm", "randomteleport.tpothers");
-        } else if (!presetExistsInConfig(preset)) {
+            return;
+        }
+        if (!presetExistsInConfig(preset)) {
             plugin.sendMessage(sender, "error.preset-doesnt-exist", "preset", preset);
-        } else {
-            if (sender == target) {
-                for (RandomSearcher searcher : plugin.getRunningSearchers().values()) {
-                    if (searcher.getTargets().contains(target)) {
-                        plugin.sendMessage(sender, "error.already-searching", "preset", preset);
-                        return;
-                    }
+            return;
+        }
+
+        if (sender == target) {
+            for (RandomSearcher searcher : plugin.getRunningSearchers().values()) {
+                if (searcher.getTargets().contains(target)) {
+                    plugin.sendMessage(sender, "error.already-searching", "preset", preset);
+                    return;
                 }
             }
-
-            try {
-                plugin.runPreset(plugin.getServer().getConsoleSender(), preset, target, center);
-            } catch (IllegalArgumentException e) {
-                plugin.sendMessage(sender, "error.preset-invalid", "preset", preset);
-                plugin.getLogger().log(Level.SEVERE, "Error while parsing preset " + preset, e);
-            }
         }
+
+        try {
+            plugin.runPreset(plugin.getServer().getConsoleSender(), preset, target, center);
+        } catch (IllegalArgumentException e) {
+            plugin.sendMessage(sender, "error.preset-invalid", "preset", preset);
+            plugin.getLogger().log(Level.SEVERE, "Error while parsing preset " + preset, e);
+        }
+
     }
 
     private boolean presetExistsInConfig(String preset) {
