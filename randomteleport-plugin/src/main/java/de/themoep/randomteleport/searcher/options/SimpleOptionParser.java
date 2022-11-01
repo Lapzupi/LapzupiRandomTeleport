@@ -19,7 +19,7 @@ package de.themoep.randomteleport.searcher.options;
  */
 
 import de.themoep.randomteleport.searcher.RandomSearcher;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
