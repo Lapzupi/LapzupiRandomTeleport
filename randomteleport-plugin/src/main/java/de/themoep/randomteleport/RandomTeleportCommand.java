@@ -51,7 +51,9 @@ public class RandomTeleportCommand implements CommandExecutor {
                 runPreset(preset, sender, player, player.getLocation());
                 return true;
             }
-        } else if (args.length == 1) {
+            return false;
+        }
+        if (args.length == 1) {
             if ("--reload".equalsIgnoreCase(args[0]) && sender.hasPermission("randomteleport.reload")) {
                 plugin.loadConfig();
                 plugin.sendMessage(sender, "reloaded");
@@ -62,28 +64,29 @@ public class RandomTeleportCommand implements CommandExecutor {
                 runPreset(args[0].toLowerCase(), sender, (Player) sender, ((Player) sender).getLocation());
                 return true;
             }
-        } else {
-            try {
-                if (sender.hasPermission("randomteleport.manual")) {
-                    plugin.parseAndRun(sender, getLocation(sender), args);
-                    return true;
-                } else {
-                    plugin.sendMessage(sender, "error.no-permission.general", "perm", "randomteleport.manual");
-                    return true;
-                }
-            } catch (IllegalArgumentException e) {
-                if (args.length == 2) {
-                    Player target = plugin.getServer().getPlayer(args[1]);
-                    if (target == null) {
-                        plugin.sendMessage(sender, "error.player-not-found", "what", args[1]);
-                        return true;
-                    }
-                    runPreset(args[0].toLowerCase(), sender, target, target.getLocation());
-                    return true;
-                }
-                sender.sendMessage(e.getMessage());
-            }
+            return false;
         }
+
+        try {
+            if (sender.hasPermission("randomteleport.manual")) {
+                plugin.parseAndRun(sender, getLocation(sender), args);
+            } else {
+                plugin.sendMessage(sender, "error.no-permission.general", "perm", "randomteleport.manual");
+            }
+            return true;
+        } catch (IllegalArgumentException e) {
+            if (args.length == 2) {
+                Player target = plugin.getServer().getPlayer(args[1]);
+                if (target == null) {
+                    plugin.sendMessage(sender, "error.player-not-found", "what", args[1]);
+                    return true;
+                }
+                runPreset(args[0].toLowerCase(), sender, target, target.getLocation());
+                return true;
+            }
+            sender.sendMessage(e.getMessage());
+        }
+
         return false;
     }
 
