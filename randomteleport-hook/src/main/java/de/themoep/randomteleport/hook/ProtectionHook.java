@@ -50,7 +50,7 @@ public interface ProtectionHook extends PluginHook {
      * @param world The chunk's world
      * @param chunkX The chunk's X coordinate
      * @param chunkZ The chunk's Z coordinate
-     * @return Whether or not the player can build
+     * @return Whether the player can build
      */
     boolean canBuild(Player player, World world, int chunkX, int chunkZ);
 

@@ -21,7 +21,7 @@ package de.themoep.randomteleport.api;
 import de.themoep.randomteleport.searcher.RandomSearcher;
 import de.themoep.randomteleport.searcher.validators.LocationValidator;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 

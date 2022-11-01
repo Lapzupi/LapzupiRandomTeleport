@@ -280,20 +280,20 @@ public class RandomSearcher {
     }
 
     /**
-     * By default it will search for coordinates in any chunk, even unloaded ones prompting the server to load new
+     * By default, it will search for coordinates in any chunk, even unloaded ones prompting the server to load new
      * chunks which might result in some performance impact if the server doesn't support async loading. This disables
      * that and only searches in already loaded chunks. (But might fail more often)
-     * @param loadedOnly Whether or not to search in loaded chunks only
+     * @param loadedOnly Whether to search in loaded chunks only
      */
     public void searchInLoadedOnly(boolean loadedOnly) {
         this.loadedOnly = loadedOnly;
     }
 
     /**
-     * By default it will search for coordinates in any chunk, even ungenerated ones prompting the world to get
+     * By default, it will search for coordinates in any chunk, even ungenerated ones prompting the world to get
      * generated at the point which might result in some performance impact. This disables that and only searches
      * in already generated chunks.
-     * @param generatedOnly Whether or not to search in generated chunks only
+     * @param generatedOnly Whether to search in generated chunks only
      */
     public void searchInGeneratedOnly(boolean generatedOnly) {
         this.generatedOnly = generatedOnly;
@@ -395,8 +395,8 @@ public class RandomSearcher {
                 || !inRadius(Math.abs(randChunkX), Math.abs(randChunkZ), minChunk, maxChunk)
                 || (generatedOnly && !PaperLib.isChunkGenerated(randomLoc.getWorld(), randChunkX, randChunkZ)));
 
-        randomLoc.setX(((center.getBlockX() >> 4) + randChunkX) * 16);
-        randomLoc.setZ(((center.getBlockZ() >> 4) + randChunkZ) * 16);
+        randomLoc.setX(((center.getBlockX() >> 4) + randChunkX) * 16D);
+        randomLoc.setZ(((center.getBlockZ() >> 4) + randChunkZ) * 16D);
         PaperLib.getChunkAtAsync(randomLoc).thenApply(c -> {
             checks++;
             if (c == null) {

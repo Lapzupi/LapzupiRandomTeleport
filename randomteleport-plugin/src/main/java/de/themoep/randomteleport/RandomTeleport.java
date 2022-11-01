@@ -350,7 +350,7 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
     }
 
     /**
-     * Check whether or not a sign line matches the configured variables
+     * Check whether a sign line matches the configured variables
      * @param line The line to match
      * @return <tt>true</tt> if it matches; <tt>false</tt> if not
      */

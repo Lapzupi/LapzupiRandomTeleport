@@ -64,7 +64,7 @@ public class SimpleOptionParser implements OptionParser {
                                 "perm", "randomteleport.manual.option." + aliases.iterator().next()));
                     }
                     i++;
-                    int argLength = argsLength > 0 ? argsLength : 0;
+                    int argLength = Math.max(argsLength, 0);
                     for (int j = i + argLength; j < args.length; j++) {
                         if (!args[j].startsWith("-")) {
                             argLength++;

@@ -13,13 +13,13 @@ Aliases: `randomteleport`, `randomtp`, `rtp`
 
 Permission: `randomteleport.use`
 
-Usage                                       | Description
---------------------------------------------|-------------------------------
-`/rtp`                                      | uses the default preset  
-`/rtp <preset> [<playername>]`              | uses a specific preset  
-`/rtp <minRange> <maxRange> [<options>]`    | `minRange` - minimum distance to the center point (square shaped) <br> `maxRange` - maximum distance to the center point (square shaped)  
-`/rtp --stat`                               | shows a statistic of the teleports since the last restart  
-`/rtp --reload`                             | reloads the config  
+| Usage                                    | Description                                                                                                                              |
+|------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| `/rtp`                                   | uses the default preset                                                                                                                  |
+| `/rtp <preset> [<playername>]`           | uses a specific preset                                                                                                                   |
+| `/rtp <minRange> <maxRange> [<options>]` | `minRange` - minimum distance to the center point (square shaped) <br> `maxRange` - maximum distance to the center point (square shaped) |
+| `/rtp --stat`                            | shows a statistic of the teleports since the last restart                                                                                |
+| `/rtp --reload`                          | reloads the config                                                                                                                       |
 
 Option                          | Description
 --------------------------------|-------------------------------------------

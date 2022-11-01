@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report an error that that you found
+about: Report an error that you found
 title: ''
 labels: ''
 assignees: ''
