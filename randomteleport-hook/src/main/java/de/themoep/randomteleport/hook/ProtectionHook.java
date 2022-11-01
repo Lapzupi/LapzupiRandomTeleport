@@ -30,7 +30,7 @@ public interface ProtectionHook extends PluginHook {
      *
      * @param player The player to check
      * @param location The location to check
-     * @return Whether or not the player can build
+     * @return Whether the player can build
      */
     boolean canBuild(Player player, Location location);
 
@@ -38,7 +38,7 @@ public interface ProtectionHook extends PluginHook {
      * Check if a player can build in a chunk
      * @param player The player to check
      * @param chunk The chunk to check
-     * @return Whether or not the player can build
+     * @return Whether the player can build
      */
     default boolean canBuild(Player player, Chunk chunk) {
         return canBuild(player, chunk.getWorld(), chunk.getX(), chunk.getZ());

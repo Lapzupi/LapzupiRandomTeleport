@@ -27,7 +27,7 @@ public interface PluginHook {
 
     default int getHookVersion() {
         return 0;
-    };
+    }
 
-    default void unregisterEvents() {};
+    default void unregisterEvents() {}
 }

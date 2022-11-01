@@ -64,7 +64,9 @@ public class HookManager implements Listener, ProtectionHook, WorldborderHook {
                 if (!PluginHook.class.isAssignableFrom(hookClass)) {
                     hookClass = null;
                 }
-            } catch (ClassNotFoundException ignored) {}
+            } catch (ClassNotFoundException ignored) {
+                //ignored
+            }
             if (version.contains("_")) {
                 version = version.substring(0, version.lastIndexOf('_'));
             } else {
@@ -73,7 +75,9 @@ public class HookManager implements Listener, ProtectionHook, WorldborderHook {
                     if (!PluginHook.class.isAssignableFrom(hookClass)) {
                         hookClass = null;
                     }
-                } catch (ClassNotFoundException ignored) {}
+                } catch (ClassNotFoundException ignored) {
+                    //ignored
+                }
                 break;
             }
         } while (hookClass == null);
