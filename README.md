@@ -21,24 +21,24 @@ Permission: `randomteleport.use`
 | `/rtp --stat`                            | shows a statistic of the teleports since the last restart                                                                                |
 | `/rtp --reload`                          | reloads the config                                                                                                                       |
 
-Option                          | Description
---------------------------------|-------------------------------------------
-`-p,-player <playername>`       | teleports other players 
-`-w,-world <worldname>`         | teleports the player in a specific world  
-`-b,-biome <biomename...>`      | only teleport to this biome (multiple allowed, Bukkit biome names!)  
-`-x,-xPos <x value>`            | x axis of the center point, if not set the player's x axis is used  
-`-z,-zPos <z value>`            | z axis of the center point, if not set the player's z axis is used  
-`-minY <y value>`               | minimum y value that the random location should have (default: 0)  
-`-maxY <y value>`               | maximum y value that the random location should have (default: world height, half in nether)  
-`-l,-loaded`                    | only search loaded chunks for possible locations (might fail more often)  
-`-g,-generated`                 | only search generated chunks for possible locations  
-`-c, -cooldown <seconds>`       | cooldown in seconds after which the player can use this teleporter again  
-`-id <id>`                      | the ID to use for the cooldown, uses automatically generated one if not provided  
-`-f,-force`                     | teleport even if there is no dirt/grass/sand/gravel, only checks for lava/water/cactus, ignores WorldGuard/Faction regions  
-`-f,-force [<blocks/regions>]`  | only ignore blocks or regions  
-`-t,-tries <amount>`            | the amount of times the plugin should try to find a random location before giving up  
-`-sp,spawnpoint [force]`        | set the respawn point of the player to the location he teleported to (force overrides existing spawnpoint)  
-`-checkdelay <ticks>`           | the amount of ticks to wait between each chunk check
+| Option                         | Description                                                                                                                |
+|--------------------------------|----------------------------------------------------------------------------------------------------------------------------|
+| `-p,-player <playername>`      | teleports other players                                                                                                    |
+| `-w,-world <worldname>`        | teleports the player in a specific world                                                                                   |
+| `-b,-biome <biomename...>`     | only teleport to this biome (multiple allowed, Bukkit biome names!)                                                        |
+| `-x,-xPos <x value>`           | x axis of the center point, if not set the player's x axis is used                                                         |
+| `-z,-zPos <z value>`           | z axis of the center point, if not set the player's z axis is used                                                         |
+| `-minY <y value>`              | minimum y value that the random location should have (default: 0)                                                          |
+| `-maxY <y value>`              | maximum y value that the random location should have (default: world height, half in nether)                               |
+| `-l,-loaded`                   | only search loaded chunks for possible locations (might fail more often)                                                   |
+| `-g,-generated`                | only search generated chunks for possible locations                                                                        |
+| `-c, -cooldown <seconds>`      | cooldown in seconds after which the player can use this teleporter again                                                   |
+| `-id <id>`                     | the ID to use for the cooldown, uses automatically generated one if not provided                                           |
+| `-f,-force`                    | teleport even if there is no dirt/grass/sand/gravel, only checks for lava/water/cactus, ignores WorldGuard/Faction regions |
+| `-f,-force [<blocks/regions>]` | only ignore blocks or regions                                                                                              |
+| `-t,-tries <amount>`           | the amount of times the plugin should try to find a random location before giving up                                       |
+| `-sp,spawnpoint [force]`       | set the respawn point of the player to the location he teleported to (force overrides existing spawnpoint)                 |
+| `-checkdelay <ticks>`          | the amount of ticks to wait between each chunk check                                                                       |
 
 ## Permissions
 

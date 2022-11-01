@@ -40,8 +40,7 @@ public class RandomTeleportCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) {
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
+            if (sender instanceof Player player) {
                 String preset = "default";
                 if (plugin.getConfig().getBoolean("use-player-world-as-preset", false)) {
                     String worldName = player.getWorld().getName().toLowerCase();
@@ -60,8 +59,8 @@ public class RandomTeleportCommand implements CommandExecutor {
                 return true;
             } else if ("--stat".equalsIgnoreCase(args[0]) && sender.hasPermission("randomteleport.stat")) {
                 //TODO: teleporter and searcher statistics
-            } else if (sender instanceof Player) {
-                runPreset(args[0].toLowerCase(), sender, (Player) sender, ((Player) sender).getLocation());
+            } else if (sender instanceof Player player) {
+                runPreset(args[0].toLowerCase(), sender, player, player.getLocation());
                 return true;
             }
             return false;
