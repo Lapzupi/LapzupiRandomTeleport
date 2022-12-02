@@ -39,6 +39,7 @@ import de.themoep.randomteleport.searcher.validators.ProtectionValidator;
 import de.themoep.randomteleport.searcher.validators.WorldborderValidator;
 import de.themoep.utils.lang.bukkit.LanguageManager;
 import io.papermc.lib.PaperLib;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
@@ -267,6 +268,7 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
 
     /**
      * Get the map of all running searchers
+     *
      * @return The map of running searchers
      */
     public Map<UUID, RandomSearcher> getRunningSearchers() {
@@ -275,6 +277,7 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
 
     /**
      * Utility method to create arrays with a nicer syntax. Seriously, why does Java not just accept {"string"} as parameters?!?
+     *
      * @param array The array values
      * @return The same array
      */
@@ -291,12 +294,25 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
     }
 
     public boolean sendMessage(CommandSender sender, String key, String... replacements) {
-        BaseComponent[] message = getComponentMessage(sender, key, replacements);
+        BaseComponent[] message;
+        if (sender instanceof Player player) {
+            message = getComponentMessage(sender, key, replacePapiPlaceholders(player, replacements));
+        } else {
+            message = getComponentMessage(sender, key, replacements);
+        }
         if (message != null && message.length != 0) {
             sender.spigot().sendMessage(message);
             return true;
         }
         return false;
+    }
+
+    private String[] replacePapiPlaceholders(Player player, String... replacements) {
+        List<String> replaced = new ArrayList<>();
+        for (String message : replacements) {
+            replaced.add(PlaceholderAPI.setPlaceholders(player, message));
+        }
+        return replaced.toArray(new String[]{});
     }
 
     public BaseComponent[] getComponentMessage(CommandSender sender, String key, String... replacements) {
@@ -324,7 +340,6 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
     }
 
     /**
-     *
      * @return
      */
     public List<OptionParser> getOptionParsers() {
@@ -333,6 +348,7 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
 
     /**
      * Add an option parser to this plugin
+     *
      * @param parser The parser to add
      */
     public void addOptionParser(OptionParser parser) {
@@ -344,13 +360,15 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
                 perm.addParent(parent, true);
                 try {
                     getServer().getPluginManager().addPermission(perm);
-                } catch (IllegalArgumentException ignored) {} // duplicate
+                } catch (IllegalArgumentException ignored) {
+                } // duplicate
             }
         }
     }
 
     /**
      * Check whether a sign line matches the configured variables
+     *
      * @param line The line to match
      * @return <tt>true</tt> if it matches; <tt>false</tt> if not
      */
@@ -360,9 +378,10 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
 
     /**
      * Create and run a searcher using specified args the same way the command does
-     * @param sender    The sender of the command
-     * @param center    The center location for the searcher
-     * @param args      The arguments to parse
+     *
+     * @param sender The sender of the command
+     * @param center The center location for the searcher
+     * @param args   The arguments to parse
      * @return Returns the searcher that is running or null if it was stopped due to a cooldown
      * @throws IllegalArgumentException Thrown when arguments couldn't be handled properly
      */
@@ -449,6 +468,7 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
 
     /**
      * Run a preset
+     *
      * @param sender The sender that executed the preset
      * @param preset The preset ID to run
      * @param target The player targeted by the teleporter
@@ -486,6 +506,7 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
 
     /**
      * Utility method to get the min height of a world as old versions didn't have support for this.
+     *
      * @param world The world
      * @return The min height or 0 if querying that isn't supported
      */
