@@ -294,12 +294,8 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
     }
 
     public boolean sendMessage(CommandSender sender, String key, String... replacements) {
-        BaseComponent[] message;
-        if (sender instanceof Player player) {
-            message = getComponentMessage(sender, key, replacePapiPlaceholders(player, replacements));
-        } else {
-            message = getComponentMessage(sender, key, replacements);
-        }
+        BaseComponent[] message = getComponentMessage(sender, key, replacements);
+
         if (message != null && message.length != 0) {
             sender.spigot().sendMessage(message);
             return true;
@@ -307,20 +303,16 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
         return false;
     }
 
-    private String[] replacePapiPlaceholders(Player player, String... replacements) {
-        List<String> replaced = new ArrayList<>();
-        for (String message : replacements) {
-            replaced.add(PlaceholderAPI.setPlaceholders(player, message));
-        }
-        return replaced.toArray(new String[]{});
-    }
 
     public BaseComponent[] getComponentMessage(CommandSender sender, String key, String... replacements) {
-        return new MineDown(getLang(sender, key))
+        final String message = MineDown.stringify(new MineDown(getLang(sender, key))
                 .placeholderPrefix("{")
                 .placeholderSuffix("}")
                 .replace(replacements)
-                .toComponent();
+                .toComponent());
+
+        return TextComponent.fromLegacyText(PlaceholderAPI.setPlaceholders(null,message));
+
     }
 
     public String getTextMessage(CommandSender sender, String key, String... replacements) {
