@@ -29,7 +29,6 @@ description = 'randomteleport-plugin'
 shadowJar {
     archiveClassifier.set('')
     relocate 'io.papermc.lib', 'de.themoep.randomteleport.libs.paperlib'
-    relocate 'de.themoep.minedown', 'de.themoep.randomteleport.libs.minedown'
     relocate 'de.themoep.utils.lang', 'de.themoep.randomteleport.libs.lang'
 }
 

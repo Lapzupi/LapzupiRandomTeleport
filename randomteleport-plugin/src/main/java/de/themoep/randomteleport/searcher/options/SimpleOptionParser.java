@@ -23,6 +23,7 @@ import org.apache.commons.lang3.Validate;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -60,8 +61,8 @@ public class SimpleOptionParser implements OptionParser {
                     if (!hasAccess(searcher.getInitiator())) {
                         throw new IllegalArgumentException(searcher.getPlugin().getTextMessage(
                                 searcher.getInitiator(), "error.no-permission.option",
-                                "option", option,
-                                "perm", "randomteleport.manual.option." + aliases.iterator().next()));
+                                Map.of("option", option,
+                                "perm", "randomteleport.manual.option." + aliases.iterator().next())));
                     }
                     i++;
                     int argLength = Math.max(argsLength, 0);

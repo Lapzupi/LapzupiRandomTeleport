@@ -76,3 +76,5 @@ permissions:
    randomteleport.sign.destroy:
       description: Allows destroying preset signs ([rtp] or [RandomTP] on the 2nd line and the preset name on the 3rd)
       default: op
+libraries:
+  - org.apache.commons:commons-lang3:3.12.0

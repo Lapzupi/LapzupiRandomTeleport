@@ -20,7 +20,6 @@ package de.themoep.randomteleport;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import de.themoep.minedown.MineDown;
 import de.themoep.randomteleport.api.RandomTeleportAPI;
 import de.themoep.randomteleport.hook.HookManager;
 import de.themoep.randomteleport.listeners.SignListener;
@@ -59,6 +58,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -288,38 +288,46 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
         return array;
     }
 
-    public boolean sendMessage(@NotNull Collection<? extends CommandSender> senders, String key, String... replacements) {
+    public boolean sendMessage(@NotNull Collection<? extends CommandSender> senders, String key, Map<String,String> replacements) {
         boolean r = false;
         for (CommandSender sender : senders) {
             r |= sendMessage(sender, key, replacements);
         }
         return r;
     }
+    public boolean sendMessage(CommandSender sender, String key) {
+        return sendMessage(sender,key, Collections.emptyMap());
+    }
+    //first value of replacements, is the variable name to replace, confusing
+    //replacements are actually a key value system, so Map<Key,Replacement>
+    public boolean sendMessage(CommandSender sender, String key, Map<String,String> replacements) {
+        final String message = getMessage(sender,key,replacements);
 
-    public boolean sendMessage(CommandSender sender, String key, String... replacements) {
-        BaseComponent[] message = getComponentMessage(sender, key, replacements);
-
-        if (message != null && message.length != 0) {
-            sender.spigot().sendMessage(message);
+        if (message != null && !message.isEmpty()) {
+            sender.sendMessage(message);
             return true;
         }
         return false;
     }
 
-
-    public BaseComponent[] getComponentMessage(CommandSender sender, String key, String... replacements) {
-        final String message = MineDown.stringify(new MineDown(getLang(sender, key))
-                .placeholderPrefix("{")
-                .placeholderSuffix("}")
-                .replace(replacements)
-                .toComponent());
-
-        return TextComponent.fromLegacyText(PlaceholderAPI.setPlaceholders(null,message));
-
+    public String getMessage(final CommandSender sender, String key, Map<String,String> replacements) {
+        String message = getLang(sender,key);
+        for(Map.Entry<String,String> entry: replacements.entrySet()) {
+            message = message.replace(asPlaceholder(entry.getKey()),entry.getValue());
+        }
+        if(sender instanceof Player player) {
+            return PlaceholderAPI.setPlaceholders(player, message);
+        }
+        return PlaceholderAPI.setPlaceholders(null, message);
     }
 
-    public String getTextMessage(CommandSender sender, String key, String... replacements) {
-        return TextComponent.toLegacyText(getComponentMessage(sender, key, replacements));
+    private String asPlaceholder(final String key) {
+        return "{" + key +"}";
+    }
+
+
+    public String getTextMessage(CommandSender sender, String key, Map<String,String> replacements) {
+        return getMessage(sender, key, replacements);
     }
 
     private String getLang(CommandSender sender, String key) {
@@ -367,7 +375,7 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
      * @param line The line to match
      * @return <tt>true</tt> if it matches; <tt>false</tt> if not
      */
-    public boolean matchesSignVariable(String line) {
+    public boolean matchesSignVariable(@NotNull String line) {
         return signVariables.contains(line.toLowerCase());
     }
 
@@ -380,7 +388,7 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
      * @return Returns the searcher that is running or null if it was stopped due to a cooldown
      * @throws IllegalArgumentException Thrown when arguments couldn't be handled properly
      */
-    public RandomSearcher parseAndRun(CommandSender sender, Location center, String[] args) {
+    public RandomSearcher parseAndRun(CommandSender sender, Location center, String @NotNull [] args) {
         RandomSearcher searcher = new RandomSearcher(this, sender, center, Integer.parseInt(args[0]), Integer.parseInt(args[1]));
 
         String[] optionArgs = Arrays.copyOfRange(args, 2, args.length);
@@ -401,10 +409,10 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
         }
 
         if (cooldown > 0 && cooldown < searcher.getCooldown()) {
-            sendMessage(searcher.getTargets(), "error.cooldown", "cooldown_text", Integer.toString(searcher.getCooldown() - cooldown));
+            sendMessage(searcher.getTargets(), "error.cooldown", Map.of("cooldown_text", Integer.toString(searcher.getCooldown() - cooldown)));
             return null;
         }
-        sendMessage(searcher.getTargets(), "search", "worldname", searcher.getCenter().getWorld().getName());
+        sendMessage(searcher.getTargets(), "search", Map.of("worldname", searcher.getCenter().getWorld().getName()));
         searcher.search().thenApply(targetLoc -> {
             searcher.getTargets().forEach(e -> {
                 if (e instanceof Player) {
@@ -419,28 +427,28 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
                     if (success) {
                         cooldowns.put(searcher.getId(), e.getUniqueId(), new AbstractMap.SimpleImmutableEntry<>(System.currentTimeMillis(), searcher.getCooldown()));
                         sendMessage(e, "teleport",
-                                "worldname", targetLoc.getWorld().getName(),
+                                Map.of("worldname", targetLoc.getWorld().getName(),
                                 "x", String.valueOf(targetLoc.getBlockX()),
                                 "y", String.valueOf(targetLoc.getBlockY()),
-                                "z", String.valueOf(targetLoc.getBlockZ())
+                                "z", String.valueOf(targetLoc.getBlockZ()))
                         );
                         if (searcher.getOptions().containsKey("spawnpoint") && e instanceof Player) {
                             if (((Player) e).getBedSpawnLocation() == null || "force".equalsIgnoreCase(searcher.getOptions().get("spawnpoint"))) {
                                 ((Player) e).setBedSpawnLocation(targetLoc, true);
                                 sendMessage(e, "setspawnpoint",
-                                        "worldname", targetLoc.getWorld().getName(),
+                                        Map.of("worldname", targetLoc.getWorld().getName(),
                                         "x", String.valueOf(targetLoc.getBlockX()),
                                         "y", String.valueOf(targetLoc.getBlockY()),
-                                        "z", String.valueOf(targetLoc.getBlockZ())
+                                        "z", String.valueOf(targetLoc.getBlockZ()))
                                 );
                             }
                         }
                     } else {
                         sendMessage(e, "error.teleport",
-                                "worldname", targetLoc.getWorld().getName(),
+                                Map.of("worldname", targetLoc.getWorld().getName(),
                                 "x", String.valueOf(targetLoc.getBlockX()),
                                 "y", String.valueOf(targetLoc.getBlockY()),
-                                "z", String.valueOf(targetLoc.getBlockZ())
+                                "z", String.valueOf(targetLoc.getBlockZ()))
                         );
                     }
                 });
@@ -470,7 +478,7 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
      * @param center The center for the search
      * @return The RandomSearcher instance that is searching
      */
-    public RandomSearcher runPreset(CommandSender sender, String preset, Player target, Location center) {
+    public RandomSearcher runPreset(CommandSender sender, String preset, @NotNull Player target, Location center) {
         String cmd = getConfig().getString("presets." + preset) + " -p " + target.getName();
         if (!cmd.contains("-id")) {
             cmd += " -id " + preset;

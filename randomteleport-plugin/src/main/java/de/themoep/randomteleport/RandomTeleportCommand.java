@@ -29,6 +29,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.logging.Level;
 
 public class RandomTeleportCommand implements CommandExecutor {
@@ -72,14 +73,14 @@ public class RandomTeleportCommand implements CommandExecutor {
             if (sender.hasPermission("randomteleport.manual")) {
                 plugin.parseAndRun(sender, getLocation(sender), args);
             } else {
-                plugin.sendMessage(sender, "error.no-permission.general", "perm", "randomteleport.manual");
+                plugin.sendMessage(sender, "error.no-permission.general", Map.of("perm", "randomteleport.manual"));
             }
             return true;
         } catch (IllegalArgumentException e) {
             if (args.length == 2) {
                 Player target = plugin.getServer().getPlayer(args[1]);
                 if (target == null) {
-                    plugin.sendMessage(sender, "error.player-not-found", "what", args[1]);
+                    plugin.sendMessage(sender, "error.player-not-found", Map.of("what", args[1]));
                     return true;
                 }
                 runPreset(args[0].toLowerCase(), sender, target, target.getLocation());
@@ -94,24 +95,24 @@ public class RandomTeleportCommand implements CommandExecutor {
     private void runPreset(String preset, @NotNull CommandSender sender, Player target, Location center) {
         if (!sender.hasPermission("randomteleport.presets." + preset)) {
             plugin.sendMessage(sender, "error.no-permission.preset",
-                    "preset", preset, "perm",
-                    "randomteleport.presets." + preset
+                    Map.of("preset", preset, "perm",
+                    "randomteleport.presets." + preset)
             );
             return;
         }
         if (sender != target && !sender.hasPermission("randomteleport.tpothers")) {
-            plugin.sendMessage(sender, "error.no-permission.tp-others", "perm", "randomteleport.tpothers");
+            plugin.sendMessage(sender, "error.no-permission.tp-others", Map.of("perm", "randomteleport.tpothers"));
             return;
         }
         if (!presetExistsInConfig(preset)) {
-            plugin.sendMessage(sender, "error.preset-doesnt-exist", "preset", preset);
+            plugin.sendMessage(sender, "error.preset-doesnt-exist", Map.of("preset", preset));
             return;
         }
 
         if (sender == target) {
             for (RandomSearcher searcher : plugin.getRunningSearchers().values()) {
                 if (searcher.getTargets().contains(target)) {
-                    plugin.sendMessage(sender, "error.already-searching", "preset", preset);
+                    plugin.sendMessage(sender, "error.already-searching", Map.of("preset", preset));
                     return;
                 }
             }
@@ -120,7 +121,7 @@ public class RandomTeleportCommand implements CommandExecutor {
         try {
             plugin.runPreset(plugin.getServer().getConsoleSender(), preset, target, center);
         } catch (IllegalArgumentException e) {
-            plugin.sendMessage(sender, "error.preset-invalid", "preset", preset);
+            plugin.sendMessage(sender, "error.preset-invalid", Map.of("preset", preset));
             plugin.getLogger().log(Level.SEVERE, "Error while parsing preset " + preset, e);
         }
 
