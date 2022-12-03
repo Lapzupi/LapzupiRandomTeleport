@@ -30,19 +30,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}.pluginhook</groupId>
-            <artifactId>worldguard-6</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}.pluginhook</groupId>
             <artifactId>worldguard-7</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}.pluginhook</groupId>
-            <artifactId>worldborder</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>

@@ -62,7 +62,7 @@ public class RandomSearcher {
 
     private Random random = RandomTeleport.RANDOM;
 
-    private Set<Entity> targets = Collections.newSetFromMap(new LinkedHashMap<>());
+    private final Set<Entity> targets = Collections.newSetFromMap(new LinkedHashMap<>());
 
     private String id = null;
     private long seed = -1;
@@ -76,7 +76,7 @@ public class RandomSearcher {
     private boolean generatedOnly = false;
     private int maxTries = 100;
     private int cooldown;
-    private Map<String, String> options = new LinkedHashMap<>();
+    private final Map<String, String> options = new LinkedHashMap<>();
 
     private long lastCheck;
     private int checks = 0;

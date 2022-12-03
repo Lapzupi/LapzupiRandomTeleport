@@ -74,11 +74,11 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
     public static final Random RANDOM = new Random();
     private HookManager hookManager;
     private LanguageManager lang;
-    private Table<String, UUID, Map.Entry<Long, Integer>> cooldowns = HashBasedTable.create();
-    private Map<UUID, RandomSearcher> runningSearchers = new HashMap<>();
+    private final Table<String, UUID, Map.Entry<Long, Integer>> cooldowns = HashBasedTable.create();
+    private final Map<UUID, RandomSearcher> runningSearchers = new HashMap<>();
 
-    private ValidatorRegistry locationValidators = new ValidatorRegistry();
-    private List<OptionParser> optionParsers = new ArrayList<>();
+    private final ValidatorRegistry locationValidators = new ValidatorRegistry();
+    private final List<OptionParser> optionParsers = new ArrayList<>();
 
     private Material[] safeBlocks;
     private Material[] unsafeBlocks;

@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 public class HookManager implements Listener, ProtectionHook, WorldborderHook {
     private final Plugin plugin;
 
-    private Map<String, PluginHook> hookMap = new LinkedHashMap<>();
+    private final Map<String, PluginHook> hookMap = new LinkedHashMap<>();
 
     public HookManager(Plugin plugin) {
         this.plugin = plugin;

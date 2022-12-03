@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class ValidatorRegistry {
 
-    private Map<String, LocationValidator> validators = new LinkedHashMap<>();
+    private final Map<String, LocationValidator> validators = new LinkedHashMap<>();
 
     /**
      * Get the map of currently set location validators

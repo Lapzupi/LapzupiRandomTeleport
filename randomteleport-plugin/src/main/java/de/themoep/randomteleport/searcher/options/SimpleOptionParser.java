@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 public class SimpleOptionParser implements OptionParser {
 
-    private Set<String> aliases;
+    private final Set<String> aliases;
     private final int argsLength;
     private final BiFunction<RandomSearcher, String[], Boolean> parser;
 

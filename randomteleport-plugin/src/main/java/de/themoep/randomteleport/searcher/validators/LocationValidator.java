@@ -22,7 +22,7 @@ import de.themoep.randomteleport.searcher.RandomSearcher;
 import org.bukkit.Location;
 
 public abstract class LocationValidator {
-    private String type;
+    private final String type;
 
     public LocationValidator(String type) {
         this.type = type;

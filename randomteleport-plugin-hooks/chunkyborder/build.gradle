@@ -1,0 +1,15 @@
+
+plugins {
+    id 'de.themoep.randomteleport.java-conventions'
+}
+
+dependencies {
+    implementation project(':randomteleport-hook')
+    compileOnly 'org.popcraft:chunkyborder-common:1.1.34'
+    compileOnly 'org.popcraft:chunkyborder-bukkit:1.1.34'
+    compileOnly 'org.popcraft:chunky-common:1.3.38'
+    compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
+}
+
+group = 'de.themoep.randomteleport.pluginhook'
+description = 'chunkyborder'
