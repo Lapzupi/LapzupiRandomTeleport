@@ -42,21 +42,21 @@ Permission: `randomteleport.use`
 
 ## Permissions
 
-Permission                          | Default | Description
-------------------------------------|---------|---------------------------
-randomteleport.use                  | op      | Gives permission to the command
-randomteleport.manual               | op      | Gives permission to manually specify parameters in the command
-randomteleport.manual.option.*      | op      | Gives permission to use certain options in the command
-randomteleport.tpothers             | op      | Gives permission to teleport other players
-randomteleport.cooldownexempt       | op      | Teleportcooldown does not effect these players
-randomteleport.stat                 | op      | Permission for showing the teleport statistic
-randomteleport.reload               | op      | Permission to use the reload command 
-randomteleport.presets.default      | op      | Gives permission to use the default random teleport preset
-randomteleport.presets.*            | op      | Gives permission to use all random teleport presets
-randomteleport.sign.preset.default  | op      | Gives permission to use the default preset with a rightclick on a preset sign
-randomteleport.sign.preset.*        | op      | Gives permission to use all presets with a rightclick on a preset sign
-randomteleport.sign.create          | op      | Allows creating preset signs ([rtp] or [RandomTP] on the 2nd line and the preset name on the 3rd)
-randomteleport.sign.destroy         | op      | Allows destroying preset signs ([rtp] or [RandomTP] on the 2nd line and the preset name on the 3rd)
+| Permission                         | Default | Description                                                                                         |
+|------------------------------------|---------|-----------------------------------------------------------------------------------------------------|
+| randomteleport.use                 | op      | Gives permission to the command                                                                     |
+| randomteleport.manual              | op      | Gives permission to manually specify parameters in the command                                      |
+| randomteleport.manual.option.*     | op      | Gives permission to use certain options in the command                                              |
+| randomteleport.tpothers            | op      | Gives permission to teleport other players                                                          | 
+| randomteleport.cooldownexempt      | op      | Teleportcooldown does not effect these players                                                      |
+| randomteleport.stat                | op      | Permission for showing the teleport statistic                                                       |
+| randomteleport.reload              | op      | Permission to use the reload command                                                                |
+| randomteleport.presets.default     | op      | Gives permission to use the default random teleport preset                                          |
+| randomteleport.presets.*           | op      | Gives permission to use all random teleport presets                                                 |
+| randomteleport.sign.preset.default | op      | Gives permission to use the default preset with a rightclick on a preset sign                       |
+| randomteleport.sign.preset.*       | op      | Gives permission to use all presets with a rightclick on a preset sign                              |
+| randomteleport.sign.create         | op      | Allows creating preset signs ([rtp] or [RandomTP] on the 2nd line and the preset name on the 3rd)   |
+| randomteleport.sign.destroy        | op      | Allows destroying preset signs ([rtp] or [RandomTP] on the 2nd line and the preset name on the 3rd) |
 
 ## Downloads
 
