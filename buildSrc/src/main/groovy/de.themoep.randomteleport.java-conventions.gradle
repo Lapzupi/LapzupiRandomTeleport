@@ -68,6 +68,7 @@ dependencies {
     api 'de.themoep:minedown:1.7.1-SNAPSHOT'
     api 'de.themoep.utils:lang-bukkit:1.3-SNAPSHOT'
     api 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'org.jetbrains:annotations:23.0.0'
     compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
 }
 

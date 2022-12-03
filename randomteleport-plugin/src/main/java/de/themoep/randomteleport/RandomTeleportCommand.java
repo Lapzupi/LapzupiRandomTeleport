@@ -27,6 +27,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Level;
 
@@ -38,7 +39,7 @@ public class RandomTeleportCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender,@NotNull  Command command,@NotNull  String label, String @NotNull [] args) {
         if (args.length == 0) {
             if (sender instanceof Player player) {
                 String preset = "default";
@@ -58,6 +59,7 @@ public class RandomTeleportCommand implements CommandExecutor {
                 plugin.sendMessage(sender, "reloaded");
                 return true;
             } else if ("--stat".equalsIgnoreCase(args[0]) && sender.hasPermission("randomteleport.stat")) {
+                plugin.getLogger().info("Unimplemented.");
                 //TODO: teleporter and searcher statistics
             } else if (sender instanceof Player player) {
                 runPreset(args[0].toLowerCase(), sender, player, player.getLocation());
@@ -89,7 +91,7 @@ public class RandomTeleportCommand implements CommandExecutor {
         return false;
     }
 
-    private void runPreset(String preset, CommandSender sender, Player target, Location center) {
+    private void runPreset(String preset, @NotNull CommandSender sender, Player target, Location center) {
         if (!sender.hasPermission("randomteleport.presets." + preset)) {
             plugin.sendMessage(sender, "error.no-permission.preset",
                     "preset", preset, "perm",
@@ -128,11 +130,11 @@ public class RandomTeleportCommand implements CommandExecutor {
         return plugin.getConfig().getString("presets." + preset) != null;
     }
 
-    private static Location getLocation(CommandSender sender) {
-        if (sender instanceof Entity) {
-            return ((Entity) sender).getLocation();
-        } else if (sender instanceof BlockCommandSender) {
-            return ((BlockCommandSender) sender).getBlock().getLocation();
+    private static @NotNull Location getLocation(CommandSender sender) {
+        if (sender instanceof Entity entity) {
+            return entity.getLocation();
+        } else if (sender instanceof BlockCommandSender blockCommandSender) {
+            return blockCommandSender.getBlock().getLocation();
         }
         return new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
     }
