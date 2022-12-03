@@ -22,6 +22,7 @@ import de.themoep.randomteleport.searcher.RandomSearcher;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -43,7 +44,7 @@ public class BlockValidator extends LocationValidator {
     }
 
     @Override
-    public boolean validate(RandomSearcher searcher, Location location) {
+    public boolean validate(RandomSearcher searcher, @NotNull Location location) {
         Block block = location.getBlock();
         return block != null && materials.contains(block.getType()) == whitelist;
     }

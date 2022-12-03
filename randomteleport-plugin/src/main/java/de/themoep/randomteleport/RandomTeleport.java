@@ -53,6 +53,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -86,6 +87,7 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
 
     private boolean hasMinHeight = true;
 
+    @Override
     public void onEnable() {
         hookManager = new HookManager(this);
         loadConfig();
@@ -281,11 +283,12 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
      * @param array The array values
      * @return The same array
      */
+    @SafeVarargs
     private static <T> T[] array(T... array) {
         return array;
     }
 
-    public boolean sendMessage(Collection<? extends CommandSender> senders, String key, String... replacements) {
+    public boolean sendMessage(@NotNull Collection<? extends CommandSender> senders, String key, String... replacements) {
         boolean r = false;
         for (CommandSender sender : senders) {
             r |= sendMessage(sender, key, replacements);
@@ -332,7 +335,7 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
     }
 
     /**
-     * @return
+     * @return option parsers
      */
     public List<OptionParser> getOptionParsers() {
         return optionParsers;
