@@ -27,7 +27,9 @@ description = 'randomteleport-plugin'
 //}
 
 shadowJar {
+    archiveBaseName.set('RandomTeleport')
     archiveClassifier.set('')
+    archiveVersion.set('')
     relocate 'io.papermc.lib', 'de.themoep.randomteleport.libs.paperlib'
     relocate 'de.themoep.utils.lang', 'de.themoep.randomteleport.libs.lang'
 }

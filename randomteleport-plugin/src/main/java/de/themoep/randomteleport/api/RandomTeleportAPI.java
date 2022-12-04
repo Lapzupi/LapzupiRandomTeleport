@@ -23,6 +23,7 @@ import de.themoep.randomteleport.searcher.validators.LocationValidator;
 import java.util.concurrent.CompletableFuture;
 
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public interface RandomTeleportAPI {
@@ -62,4 +63,13 @@ public interface RandomTeleportAPI {
      * @return a randomSearcher instance
      */
     RandomSearcher getRandomSearcher(Player player, Location center, int minRange, int maxRange, LocationValidator... validators);
+
+    /**
+     * Teleports the passed Player to a random Location
+     *
+     * @param player the Player initiating the search
+     * @param preset the preset to use
+     * @param center can be null
+     */
+    void runPreset(CommandSender sender, Player player, String preset, Location center);
 }

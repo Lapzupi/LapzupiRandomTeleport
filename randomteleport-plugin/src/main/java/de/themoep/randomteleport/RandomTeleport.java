@@ -41,6 +41,8 @@ import io.papermc.lib.PaperLib;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -52,6 +54,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
@@ -310,8 +313,8 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
         return false;
     }
 
-    public String getMessage(final CommandSender sender, String key, Map<String,String> replacements) {
-        String message = getLang(sender,key);
+    public String getMessage(final CommandSender sender, String key, @NotNull Map<String,String> replacements) {
+        String message = ChatColor.translateAlternateColorCodes('&',getLang(sender,key));
         for(Map.Entry<String,String> entry: replacements.entrySet()) {
             message = message.replace(asPlaceholder(entry.getKey()),entry.getValue());
         }
@@ -321,7 +324,8 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
         return PlaceholderAPI.setPlaceholders(null, message);
     }
 
-    private String asPlaceholder(final String key) {
+    @Contract(pure = true)
+    private @NotNull String asPlaceholder(final String key) {
         return "{" + key +"}";
     }
 
@@ -505,6 +509,27 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
     @Override
     public RandomSearcher getRandomSearcher(Player player, Location origin, int minRange, int maxRange, LocationValidator... validators) {
         return new RandomSearcher(this, player, origin, minRange, maxRange, validators);
+    }
+
+    @Override
+    public void runPreset(final CommandSender sender, final Player player, final String preset, final Location center) {
+        if (!sender.hasPermission("randomteleport.presets." + preset)) {
+            sendMessage(sender, "error.no-permission.preset",
+                    Map.of("preset", preset, "perm",
+                            "randomteleport.presets." + preset)
+            );
+            return;
+        }
+        if (!presetExistsInConfig(preset)) {
+            sendMessage(sender, "error.preset-doesnt-exist", Map.of("preset", preset));
+            return;
+        }
+
+        runPreset(sender,preset,player,center);
+    }
+
+    private boolean presetExistsInConfig(String preset) {
+        return getConfig().getString("presets." + preset) != null;
     }
 
     /**
