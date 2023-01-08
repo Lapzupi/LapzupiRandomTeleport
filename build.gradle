@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    api project(':randomteleport-api')
     api project(':randomteleport-plugin')
     api project(':randomteleport-hook')
     api project(':worldguard-7')

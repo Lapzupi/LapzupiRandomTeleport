@@ -22,6 +22,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import de.themoep.randomteleport.RandomTeleport;
 import de.themoep.randomteleport.ValidatorRegistry;
+import de.themoep.randomteleport.api.Searcher;
 import de.themoep.randomteleport.searcher.options.NotFoundException;
 import de.themoep.randomteleport.searcher.validators.LocationValidator;
 import io.papermc.lib.PaperLib;
@@ -43,7 +44,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public class RandomSearcher {
+public class RandomSearcher implements Searcher {
     private final RandomTeleport plugin;
     private final CommandSender initiator;
     private final UUID uniqueId = UUID.randomUUID();

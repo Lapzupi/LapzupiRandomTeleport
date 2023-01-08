@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    implementation project(':randomteleport-api')
     implementation project(':randomteleport-hook')
     implementation project(':chunkyborder')
     implementation project(':worldguard-7')

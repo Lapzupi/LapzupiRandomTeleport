@@ -39,9 +39,6 @@ import de.themoep.randomteleport.searcher.validators.WorldborderValidator;
 import de.themoep.utils.lang.bukkit.LanguageManager;
 import io.papermc.lib.PaperLib;
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -73,7 +70,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
+public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI<RandomSearcher, LocationValidator> {
 
     public static final Random RANDOM = new Random();
     private HookManager hookManager;
@@ -495,6 +492,8 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
         }
         return parseAndRun(sender, center, cmd.split(" "));
     }
+    
+    
 
     @Override
     public CompletableFuture<Location> getRandomLocation(Player player, Location origin, int minRange, int maxRange, LocationValidator... validators) {
@@ -512,7 +511,7 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
     }
 
     @Override
-    public void runPreset(final CommandSender sender, final Player player, final String preset, final Location center) {
+    public void runPreset(final @NotNull CommandSender sender, final Player player, final String preset, final Location center) {
         if (!sender.hasPermission("randomteleport.presets." + preset)) {
             sendMessage(sender, "error.no-permission.preset",
                     Map.of("preset", preset, "perm",

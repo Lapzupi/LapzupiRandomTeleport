@@ -18,15 +18,14 @@ package de.themoep.randomteleport.api;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import de.themoep.randomteleport.searcher.RandomSearcher;
-import de.themoep.randomteleport.searcher.validators.LocationValidator;
-import java.util.concurrent.CompletableFuture;
-
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public interface RandomTeleportAPI {
+
+import java.util.concurrent.CompletableFuture;
+
+public interface RandomTeleportAPI<T extends Searcher, R extends Validator<T>> {
 
     /**
      * Returns a random Location
@@ -38,7 +37,7 @@ public interface RandomTeleportAPI {
      * @param validators additional LocationValidators to customize validity check of a location
      * @return a random CompletableFuture<Location>
      */
-    CompletableFuture<Location> getRandomLocation(Player player, Location center, int minRange, int maxRange, LocationValidator... validators);
+    CompletableFuture<Location> getRandomLocation(Player player, Location center, int minRange, int maxRange, R... validators);
 
     /**
      * Teleports the passed Player to a random Location
@@ -50,7 +49,7 @@ public interface RandomTeleportAPI {
      * @param validators additional LocationValidators to customize validity check of a location
      * @return a CompletableFuture<Boolean> true if teleport was successful else false
      */
-    CompletableFuture<Boolean> teleportToRandomLocation(Player player, Location center, int minRange, int maxRange, LocationValidator... validators);
+    CompletableFuture<Boolean> teleportToRandomLocation(Player player, Location center, int minRange, int maxRange, R... validators);
 
     /**
      * Creates a RandomSearcher instance with the passed parameters
@@ -62,7 +61,7 @@ public interface RandomTeleportAPI {
      * @param validators additional LocationValidators to customize validity check of a location
      * @return a randomSearcher instance
      */
-    RandomSearcher getRandomSearcher(Player player, Location center, int minRange, int maxRange, LocationValidator... validators);
+    T getRandomSearcher(Player player, Location center, int minRange, int maxRange, R... validators);
 
     /**
      * Teleports the passed Player to a random Location

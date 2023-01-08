@@ -18,10 +18,11 @@ package de.themoep.randomteleport.searcher.validators;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import de.themoep.randomteleport.api.Validator;
 import de.themoep.randomteleport.searcher.RandomSearcher;
 import org.bukkit.Location;
 
-public abstract class LocationValidator {
+public abstract class LocationValidator implements Validator<RandomSearcher> {
     private final String type;
 
     public LocationValidator(String type) {
@@ -31,13 +32,7 @@ public abstract class LocationValidator {
     public String getType() {
         return type;
     }
-
-    /**
-     * Validate a location
-     * @param searcher  The searcher attempting to use this validator
-     * @param location  The location to validate
-     * @return          True if it's valid; false if not
-     */
+    
     public abstract boolean validate(RandomSearcher searcher, Location location);
 
 }
