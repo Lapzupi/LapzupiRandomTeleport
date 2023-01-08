@@ -28,6 +28,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.logging.Level;
@@ -41,7 +42,7 @@ public class SignListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onSignCreate(SignChangeEvent event) {
+    public void onSignCreate(@NotNull SignChangeEvent event) {
         if (plugin.matchesSignVariable(event.getLine(1))) {
             if (!event.getPlayer().hasPermission("randomteleport.sign.create")) {
                 event.getBlock().breakNaturally();
@@ -59,7 +60,7 @@ public class SignListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onSignDestroy(BlockBreakEvent event) {
+    public void onSignDestroy(@NotNull BlockBreakEvent event) {
         if (event.getBlock().getType().name().contains("SIGN")) {
             Sign sign = (Sign) event.getBlock().getState();
             if (plugin.matchesSignVariable(sign.getLine(1))) {
@@ -74,7 +75,7 @@ public class SignListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onSignClick(PlayerInteractEvent event) {
+    public void onSignClick(@NotNull PlayerInteractEvent event) {
         if (event.getHand() == EquipmentSlot.HAND && event.getAction() == Action.RIGHT_CLICK_BLOCK
                 && event.getClickedBlock() != null && event.getClickedBlock().getType().name().contains("SIGN")) {
             Sign sign = (Sign) event.getClickedBlock().getState();
