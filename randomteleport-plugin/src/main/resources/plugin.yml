@@ -1,7 +1,7 @@
 name: RandomTeleport
 provides: [FUBSRandomTeleport]
 main: de.themoep.randomteleport.RandomTeleport
-version: '2.0-SNAPSHOT'
+version: '2.1.0'
 api-version: 1.13
 description: ${project.description}
 author: Phoenix616

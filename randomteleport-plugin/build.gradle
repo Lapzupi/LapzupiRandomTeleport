@@ -19,7 +19,7 @@ description = 'randomteleport-plugin'
 //TODO TEMP BYPASS, DIRECTLY SET PROJECT VERSION IN THE PLUGIN.YML
 //TODO Not a solution, just making it work for now.
 //processResources {
-//    def props = [version: rootProject.version]
+//    def props = [version: version]
 //    inputs.properties props
 //    filteringCharset 'UTF-8'
 //    filesMatching('plugin.yml') {
