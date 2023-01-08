@@ -21,6 +21,7 @@ package de.themoep.randomteleport.searcher.options;
 import de.themoep.randomteleport.searcher.RandomSearcher;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class SimpleOptionParser implements OptionParser {
     }
 
     @Override
-    public boolean parse(RandomSearcher searcher, String[] args) {
+    public boolean parse(RandomSearcher searcher, String @NotNull [] args) {
         for (int i = 0; i < args.length; i++) {
             if (args[i].startsWith("-")) {
                 String option = args[i].toLowerCase().substring(1);

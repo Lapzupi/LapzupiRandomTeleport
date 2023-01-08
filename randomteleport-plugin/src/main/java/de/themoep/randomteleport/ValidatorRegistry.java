@@ -19,6 +19,7 @@ package de.themoep.randomteleport;
  */
 
 import de.themoep.randomteleport.searcher.validators.LocationValidator;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -54,7 +55,7 @@ public class ValidatorRegistry {
      * @param validator The validator to remove
      * @return The removed registered validator with the same type or null if it wasn't registered
      */
-    public LocationValidator remove(LocationValidator validator) {
+    public LocationValidator remove(@NotNull LocationValidator validator) {
         return remove(validator.getType());
     }
 
@@ -63,7 +64,7 @@ public class ValidatorRegistry {
      * @param type The type of the validator to remove
      * @return The removed registered validator with the same type or null if it wasn't registered
      */
-    public LocationValidator remove(String type) {
+    public LocationValidator remove(@NotNull String type) {
         return validators.remove(type.toLowerCase());
     }
 
@@ -72,7 +73,7 @@ public class ValidatorRegistry {
      * @param type The type of the validator to get
      * @return The registered validator with the provided type or null if none was registered
      */
-    public LocationValidator get(String type) {
+    public LocationValidator get(@NotNull String type) {
         return validators.get(type.toLowerCase());
     }
 }

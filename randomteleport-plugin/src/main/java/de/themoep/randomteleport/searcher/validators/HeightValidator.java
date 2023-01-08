@@ -23,6 +23,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -38,7 +39,7 @@ public class HeightValidator extends LocationValidator {
     }
 
     @Override
-    public boolean validate(RandomSearcher searcher, Location location) {
+    public boolean validate(@NotNull RandomSearcher searcher, @NotNull Location location) {
         Block block = location.getWorld().getHighestBlockAt(location);
         if (block.getY() > searcher.getMaxY()) {
             block = location.getWorld().getBlockAt(

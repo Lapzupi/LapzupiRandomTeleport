@@ -25,7 +25,7 @@ import org.bukkit.Location;
 public abstract class LocationValidator implements Validator<RandomSearcher> {
     private final String type;
 
-    public LocationValidator(String type) {
+    protected LocationValidator(String type) {
         this.type = type;
     }
 

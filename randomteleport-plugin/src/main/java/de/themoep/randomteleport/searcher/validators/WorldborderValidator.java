@@ -20,6 +20,7 @@ package de.themoep.randomteleport.searcher.validators;
 
 import de.themoep.randomteleport.searcher.RandomSearcher;
 import org.bukkit.Location;
+import org.jetbrains.annotations.NotNull;
 
 public class WorldborderValidator extends LocationValidator {
 
@@ -28,7 +29,7 @@ public class WorldborderValidator extends LocationValidator {
     }
 
     @Override
-    public boolean validate(RandomSearcher searcher, Location location) {
+    public boolean validate(@NotNull RandomSearcher searcher, Location location) {
         return searcher.getPlugin().getHookManager().isInsideBorder(location);
     }
 }

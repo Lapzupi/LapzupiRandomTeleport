@@ -22,6 +22,7 @@ import de.themoep.randomteleport.searcher.RandomSearcher;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class ProtectionValidator extends LocationValidator {
 
@@ -30,12 +31,12 @@ public class ProtectionValidator extends LocationValidator {
     }
 
     @Override
-    public boolean validate(RandomSearcher searcher, Location location) {
+    public boolean validate(@NotNull RandomSearcher searcher, Location location) {
         if (searcher.getTargets().isEmpty()) {
             return true;
         }
         for (Entity entity : searcher.getTargets()) {
-            if (entity instanceof Player && !searcher.getPlugin().getHookManager().canBuild((Player) entity, location)) {
+            if (entity instanceof Player player && !searcher.getPlugin().getHookManager().canBuild(player, location)) {
                 return false;
             }
         }
