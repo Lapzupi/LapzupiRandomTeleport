@@ -26,6 +26,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
@@ -38,7 +39,7 @@ import java.util.stream.Collectors;
 public class HookManager implements Listener, ProtectionHook, WorldborderHook {
     private final Plugin plugin;
 
-    private Map<String, PluginHook> hookMap = new LinkedHashMap<>();
+    private final Map<String, PluginHook> hookMap = new LinkedHashMap<>();
 
     public HookManager(Plugin plugin) {
         this.plugin = plugin;
@@ -54,7 +55,7 @@ public class HookManager implements Listener, ProtectionHook, WorldborderHook {
         }
     }
 
-    private void registerHook(Plugin plugin) {
+    private void registerHook(@NotNull Plugin plugin) {
         String path = getClass().getPackage().getName() + ".plugin." + plugin.getName();
         String version = plugin.getDescription().getVersion().replace('.', '_').replace('-', '_');
         Class<?> hookClass = null;
@@ -64,7 +65,9 @@ public class HookManager implements Listener, ProtectionHook, WorldborderHook {
                 if (!PluginHook.class.isAssignableFrom(hookClass)) {
                     hookClass = null;
                 }
-            } catch (ClassNotFoundException ignored) {}
+            } catch (ClassNotFoundException ignored) {
+                //ignored
+            }
             if (version.contains("_")) {
                 version = version.substring(0, version.lastIndexOf('_'));
             } else {
@@ -73,7 +76,9 @@ public class HookManager implements Listener, ProtectionHook, WorldborderHook {
                     if (!PluginHook.class.isAssignableFrom(hookClass)) {
                         hookClass = null;
                     }
-                } catch (ClassNotFoundException ignored) {}
+                } catch (ClassNotFoundException ignored) {
+                    //ignored
+                }
                 break;
             }
         } while (hookClass == null);
@@ -81,8 +86,8 @@ public class HookManager implements Listener, ProtectionHook, WorldborderHook {
         if (hookClass != null) {
             try {
                 PluginHook hook = (PluginHook) hookClass.getConstructor().newInstance();
-                if (hook instanceof Listener) {
-                    getPlugin().getServer().getPluginManager().registerEvents((Listener) hook, getPlugin());
+                if (hook instanceof Listener listener) {
+                    getPlugin().getServer().getPluginManager().registerEvents(listener, getPlugin());
                 }
                 hookMap.put(plugin.getName(), hook);
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {

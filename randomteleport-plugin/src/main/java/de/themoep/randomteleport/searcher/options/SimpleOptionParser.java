@@ -19,17 +19,18 @@ package de.themoep.randomteleport.searcher.options;
  */
 
 import de.themoep.randomteleport.searcher.RandomSearcher;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public class SimpleOptionParser implements OptionParser {
 
-    private Set<String> aliases;
+    private final Set<String> aliases;
     private final int argsLength;
     private final BiFunction<RandomSearcher, String[], Boolean> parser;
 
@@ -60,11 +61,11 @@ public class SimpleOptionParser implements OptionParser {
                     if (!hasAccess(searcher.getInitiator())) {
                         throw new IllegalArgumentException(searcher.getPlugin().getTextMessage(
                                 searcher.getInitiator(), "error.no-permission.option",
-                                "option", option,
-                                "perm", "randomteleport.manual.option." + aliases.iterator().next()));
+                                Map.of("option", option,
+                                "perm", "randomteleport.manual.option." + aliases.iterator().next())));
                     }
                     i++;
-                    int argLength = argsLength > 0 ? argsLength : 0;
+                    int argLength = Math.max(argsLength, 0);
                     for (int j = i + argLength; j < args.length; j++) {
                         if (!args[j].startsWith("-")) {
                             argLength++;

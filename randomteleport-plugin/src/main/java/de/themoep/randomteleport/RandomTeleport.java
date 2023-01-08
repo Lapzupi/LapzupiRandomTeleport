@@ -20,7 +20,6 @@ package de.themoep.randomteleport;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import de.themoep.minedown.MineDown;
 import de.themoep.randomteleport.api.RandomTeleportAPI;
 import de.themoep.randomteleport.hook.HookManager;
 import de.themoep.randomteleport.listeners.SignListener;
@@ -39,8 +38,8 @@ import de.themoep.randomteleport.searcher.validators.ProtectionValidator;
 import de.themoep.randomteleport.searcher.validators.WorldborderValidator;
 import de.themoep.utils.lang.bukkit.LanguageManager;
 import io.papermc.lib.PaperLib;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -52,11 +51,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,23 +70,24 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
-
+public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI<RandomSearcher, LocationValidator> {
+    
     public static final Random RANDOM = new Random();
     private HookManager hookManager;
     private LanguageManager lang;
-    private Table<String, UUID, Map.Entry<Long, Integer>> cooldowns = HashBasedTable.create();
-    private Map<UUID, RandomSearcher> runningSearchers = new HashMap<>();
-
-    private ValidatorRegistry locationValidators = new ValidatorRegistry();
-    private List<OptionParser> optionParsers = new ArrayList<>();
-
+    private final Table<String, UUID, Map.Entry<Long, Integer>> cooldowns = HashBasedTable.create();
+    private final Map<UUID, RandomSearcher> runningSearchers = new HashMap<>();
+    
+    private final ValidatorRegistry locationValidators = new ValidatorRegistry();
+    private final List<OptionParser> optionParsers = new ArrayList<>();
+    
     private Material[] safeBlocks;
     private Material[] unsafeBlocks;
     private Set<String> signVariables;
-
+    
     private boolean hasMinHeight = true;
-
+    
+    @Override
     public void onEnable() {
         hookManager = new HookManager(this);
         loadConfig();
@@ -93,7 +96,7 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
         getCommand("randomteleport").setExecutor(new RandomTeleportCommand(this));
         getServer().getPluginManager().registerEvents(new SignListener(this), this);
     }
-
+    
     public void loadConfig() {
         saveDefaultConfig();
         reloadConfig();
@@ -104,15 +107,15 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
             safeBlocksList = getConfig().getStringList("safe-blocks");
         }
         safeBlocks = safeBlocksList.stream()
-                .map(s -> {
-                    Material mat = Material.matchMaterial(s);
-                    if (mat == null) {
-                        getLogger().log(Level.WARNING, "Error in save-blocks config! No material found with name " + s);
-                    }
-                    return mat;
-                })
-                .filter(Objects::nonNull)
-                .toArray(Material[]::new);
+            .map(s -> {
+                Material mat = Material.matchMaterial(s);
+                if (mat == null) {
+                    getLogger().log(Level.WARNING, "Error in save-blocks config! No material found with name " + s);
+                }
+                return mat;
+            })
+            .filter(Objects::nonNull)
+            .toArray(Material[]::new);
         List<String> unsafeBlocksList;
         if (getConfig().contains("unsave-blocks")) {
             unsafeBlocksList = getConfig().getStringList("unsave-blocks");
@@ -120,19 +123,19 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
             unsafeBlocksList = getConfig().getStringList("unsafe-blocks");
         }
         unsafeBlocks = unsafeBlocksList.stream()
-                .map(s -> {
-                    Material mat = Material.matchMaterial(s);
-                    if (mat == null) {
-                        getLogger().log(Level.WARNING, "Error in unsave-blocks config! No material found with name " + s);
-                    }
-                    return mat;
-                })
-                .filter(Objects::nonNull)
-                .toArray(Material[]::new);
+            .map(s -> {
+                Material mat = Material.matchMaterial(s);
+                if (mat == null) {
+                    getLogger().log(Level.WARNING, "Error in unsave-blocks config! No material found with name " + s);
+                }
+                return mat;
+            })
+            .filter(Objects::nonNull)
+            .toArray(Material[]::new);
         signVariables = getConfig().getStringList("sign-variables").stream().map(String::toLowerCase).collect(Collectors.toSet());
         lang = new LanguageManager(this, getConfig().getString("lang"));
     }
-
+    
     private void initOptionParsers() {
         addOptionParser(new SimpleOptionParser(array("p", "player"), (searcher, args) -> {
             if (args.length > 0 && searcher.getInitiator().hasPermission("randomteleport.tpothers")) {
@@ -257,82 +260,101 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
         }));
         addOptionParser(new AdditionalOptionParser("spawnpoint", "sp"));
     }
-
+    
     private void initValidators() {
         locationValidators.add(new WorldborderValidator());
         locationValidators.add(new HeightValidator(unsafeBlocks));
         locationValidators.add(new ProtectionValidator());
         locationValidators.add(new BlockValidator(safeBlocks));
     }
-
+    
     /**
      * Get the map of all running searchers
+     *
      * @return The map of running searchers
      */
     public Map<UUID, RandomSearcher> getRunningSearchers() {
         return runningSearchers;
     }
-
+    
     /**
      * Utility method to create arrays with a nicer syntax. Seriously, why does Java not just accept {"string"} as parameters?!?
+     *
      * @param array The array values
      * @return The same array
      */
+    @SafeVarargs
     private static <T> T[] array(T... array) {
         return array;
     }
-
-    public boolean sendMessage(Collection<? extends CommandSender> senders, String key, String... replacements) {
+    
+    public boolean sendMessage(@NotNull Collection<? extends CommandSender> senders, String key, Map<String, String> replacements) {
         boolean r = false;
         for (CommandSender sender : senders) {
             r |= sendMessage(sender, key, replacements);
         }
         return r;
     }
-
-    public boolean sendMessage(CommandSender sender, String key, String... replacements) {
-        BaseComponent[] message = getComponentMessage(sender, key, replacements);
-        if (message != null && message.length != 0) {
-            sender.spigot().sendMessage(message);
+    
+    public boolean sendMessage(CommandSender sender, String key) {
+        return sendMessage(sender, key, Collections.emptyMap());
+    }
+    
+    //first value of replacements, is the variable name to replace, confusing
+    //replacements are actually a key value system, so Map<Key,Replacement>
+    public boolean sendMessage(CommandSender sender, String key, Map<String, String> replacements) {
+        final String message = getMessage(sender, key, replacements);
+        
+        if (message != null && !message.isEmpty()) {
+            sender.sendMessage(message);
             return true;
         }
         return false;
     }
-
-    public BaseComponent[] getComponentMessage(CommandSender sender, String key, String... replacements) {
-        return new MineDown(getLang(sender, key))
-                .placeholderPrefix("{")
-                .placeholderSuffix("}")
-                .replace(replacements)
-                .toComponent();
+    
+    public String getMessage(final CommandSender sender, String key, @NotNull Map<String, String> replacements) {
+        String message = ChatColor.translateAlternateColorCodes('&', getLang(sender, key));
+        for (Map.Entry<String, String> entry : replacements.entrySet()) {
+            message = message.replace(asPlaceholder(entry.getKey()), entry.getValue());
+        }
+        if (sender instanceof Player player) {
+            return PlaceholderAPI.setPlaceholders(player, message);
+        }
+        return PlaceholderAPI.setPlaceholders(null, message);
     }
-
-    public String getTextMessage(CommandSender sender, String key, String... replacements) {
-        return TextComponent.toLegacyText(getComponentMessage(sender, key, replacements));
+    
+    @Contract(pure = true)
+    private @NotNull String asPlaceholder(final String key) {
+        return "{" + key + "}";
     }
-
+    
+    
+    public String getTextMessage(CommandSender sender, String key, Map<String, String> replacements) {
+        return getMessage(sender, key, replacements);
+    }
+    
     private String getLang(CommandSender sender, String key) {
         return lang.getConfig(sender).get(key);
     }
-
+    
     public HookManager getHookManager() {
         return hookManager;
     }
-
+    
     public ValidatorRegistry getLocationValidators() {
         return locationValidators;
     }
-
+    
     /**
-     *
-     * @return
+     * @return option parsers
      */
     public List<OptionParser> getOptionParsers() {
         return optionParsers;
     }
-
+    
     /**
      * Add an option parser to this plugin
+     *
      * @param parser The parser to add
      */
     public void addOptionParser(OptionParser parser) {
@@ -344,38 +366,41 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
                 perm.addParent(parent, true);
                 try {
                     getServer().getPluginManager().addPermission(perm);
-                } catch (IllegalArgumentException ignored) {} // duplicate
+                } catch (IllegalArgumentException ignored) {
+                } // duplicate
             }
         }
     }
-
+    
     /**
-     * Check whether or not a sign line matches the configured variables
+     * Check whether a sign line matches the configured variables
+     *
      * @param line The line to match
      * @return <tt>true</tt> if it matches; <tt>false</tt> if not
      */
-    public boolean matchesSignVariable(String line) {
+    public boolean matchesSignVariable(@NotNull String line) {
         return signVariables.contains(line.toLowerCase());
     }
-
+    
     /**
      * Create and run a searcher using specified args the same way the command does
-     * @param sender    The sender of the command
-     * @param center    The center location for the searcher
-     * @param args      The arguments to parse
+     *
+     * @param sender The sender of the command
+     * @param center The center location for the searcher
+     * @param args   The arguments to parse
      * @return Returns the searcher that is running or null if it was stopped due to a cooldown
      * @throws IllegalArgumentException Thrown when arguments couldn't be handled properly
      */
-    public RandomSearcher parseAndRun(CommandSender sender, Location center, String[] args) {
+    public RandomSearcher parseAndRun(CommandSender sender, Location center, String @NotNull [] args) {
         RandomSearcher searcher = new RandomSearcher(this, sender, center, Integer.parseInt(args[0]), Integer.parseInt(args[1]));
-
+        
         String[] optionArgs = Arrays.copyOfRange(args, 2, args.length);
         for (OptionParser parser : getOptionParsers()) {
             parser.parse(searcher, optionArgs);
         }
-
+        
         int cooldown = 0;
-
+        
         for (Entity target : searcher.getTargets()) {
             Map.Entry<Long, Integer> lastUse = cooldowns.get(searcher.getId(), target.getUniqueId());
             if (lastUse != null) {
@@ -385,12 +410,12 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
                 }
             }
         }
-
+        
         if (cooldown > 0 && cooldown < searcher.getCooldown()) {
-            sendMessage(searcher.getTargets(), "error.cooldown", "cooldown_text", Integer.toString(searcher.getCooldown() - cooldown));
+            sendMessage(searcher.getTargets(), "error.cooldown", Map.of("cooldown_text", Integer.toString(searcher.getCooldown() - cooldown)));
             return null;
         }
-        sendMessage(searcher.getTargets(), "search", "worldname", searcher.getCenter().getWorld().getName());
+        sendMessage(searcher.getTargets(), "search", Map.of("worldname", searcher.getCenter().getWorld().getName()));
         searcher.search().thenApply(targetLoc -> {
             searcher.getTargets().forEach(e -> {
                 if (e instanceof Player) {
@@ -405,28 +430,28 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
                     if (success) {
                         cooldowns.put(searcher.getId(), e.getUniqueId(), new AbstractMap.SimpleImmutableEntry<>(System.currentTimeMillis(), searcher.getCooldown()));
                         sendMessage(e, "teleport",
-                                "worldname", targetLoc.getWorld().getName(),
+                            Map.of("worldname", targetLoc.getWorld().getName(),
                                 "x", String.valueOf(targetLoc.getBlockX()),
                                 "y", String.valueOf(targetLoc.getBlockY()),
-                                "z", String.valueOf(targetLoc.getBlockZ())
+                                "z", String.valueOf(targetLoc.getBlockZ()))
                         );
                         if (searcher.getOptions().containsKey("spawnpoint") && e instanceof Player) {
                             if (((Player) e).getBedSpawnLocation() == null || "force".equalsIgnoreCase(searcher.getOptions().get("spawnpoint"))) {
                                 ((Player) e).setBedSpawnLocation(targetLoc, true);
                                 sendMessage(e, "setspawnpoint",
-                                        "worldname", targetLoc.getWorld().getName(),
+                                    Map.of("worldname", targetLoc.getWorld().getName(),
                                         "x", String.valueOf(targetLoc.getBlockX()),
                                         "y", String.valueOf(targetLoc.getBlockY()),
-                                        "z", String.valueOf(targetLoc.getBlockZ())
+                                        "z", String.valueOf(targetLoc.getBlockZ()))
                                 );
                             }
                         }
                     } else {
                         sendMessage(e, "error.teleport",
-                                "worldname", targetLoc.getWorld().getName(),
+                            Map.of("worldname", targetLoc.getWorld().getName(),
                                 "x", String.valueOf(targetLoc.getBlockX()),
                                 "y", String.valueOf(targetLoc.getBlockY()),
-                                "z", String.valueOf(targetLoc.getBlockZ())
+                                "z", String.valueOf(targetLoc.getBlockZ()))
                         );
                     }
                 });
@@ -446,16 +471,18 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
         });
         return searcher;
     }
-
+    
+    
     /**
      * Run a preset
+     *
      * @param sender The sender that executed the preset
      * @param preset The preset ID to run
      * @param target The player targeted by the teleporter
      * @param center The center for the search
      * @return The RandomSearcher instance that is searching
      */
-    public RandomSearcher runPreset(CommandSender sender, String preset, Player target, Location center) {
+    public RandomSearcher runPreset(CommandSender sender, String preset, @NotNull Player target, Location center) {
         String cmd = getConfig().getString("presets." + preset) + " -p " + target.getName();
         if (!cmd.contains("-id")) {
             cmd += " -id " + preset;
@@ -468,24 +495,47 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI {
         }
         return parseAndRun(sender, center, cmd.split(" "));
     }
-
+    
+    
     @Override
     public CompletableFuture<Location> getRandomLocation(Player player, Location origin, int minRange, int maxRange, LocationValidator... validators) {
         return getRandomSearcher(player, origin, minRange, maxRange, validators).search();
     }
-
+    
     @Override
     public CompletableFuture<Boolean> teleportToRandomLocation(Player player, Location origin, int minRange, int maxRange, LocationValidator... validators) {
         return getRandomLocation(player, origin, minRange, maxRange, validators).thenApply(player::teleport);
     }
-
+    
     @Override
     public RandomSearcher getRandomSearcher(Player player, Location origin, int minRange, int maxRange, LocationValidator... validators) {
         return new RandomSearcher(this, player, origin, minRange, maxRange, validators);
     }
-
+    
+    @Override
+    public void runPreset(final @NotNull CommandSender sender, final Player player, final String preset, final Location center) {
+        if (!sender.hasPermission("randomteleport.presets." + preset)) {
+            sendMessage(sender, "error.no-permission.preset",
+                Map.of("preset", preset, "perm",
+                    "randomteleport.presets." + preset)
+            );
+            return;
+        }
+        if (!presetExistsInConfig(preset)) {
+            sendMessage(sender, "error.preset-doesnt-exist", Map.of("preset", preset));
+            return;
+        }
+        
+        runPreset(sender, preset, player, center);
+    }
+    
+    private boolean presetExistsInConfig(String preset) {
+        return getConfig().getString("presets." + preset) != null;
+    }
+    
     /**
      * Utility method to get the min height of a world as old versions didn't have support for this.
+     *
      * @param world The world
      * @return The min height or 0 if querying that isn't supported
      */

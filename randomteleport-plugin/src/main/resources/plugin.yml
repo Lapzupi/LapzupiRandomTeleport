@@ -1,12 +1,12 @@
 name: RandomTeleport
 provides: [FUBSRandomTeleport]
 main: de.themoep.randomteleport.RandomTeleport
-version: '${minecraft.plugin.version}'
+version: '2.0-SNAPSHOT'
 api-version: 1.13
 description: ${project.description}
 author: Phoenix616
 website: https://github.com/Phoenix616/RandomTeleport/
-softdepend: [WorldGuard, Factions, GriefPrevention, RedProtect, WorldBorder]
+softdepend: [WorldGuard, Factions, GriefPrevention, RedProtect, WorldBorder, PlaceholderAPI]
 commands:
    randomteleport:
       aliases: [randomtp, rtp]
@@ -76,3 +76,5 @@ permissions:
    randomteleport.sign.destroy:
       description: Allows destroying preset signs ([rtp] or [RandomTP] on the 2nd line and the preset name on the 3rd)
       default: op
+libraries:
+  - org.apache.commons:commons-lang3:3.12.0

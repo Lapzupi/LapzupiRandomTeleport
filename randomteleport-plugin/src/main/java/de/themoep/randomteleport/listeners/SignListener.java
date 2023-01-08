@@ -28,7 +28,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.logging.Level;
 
 public class SignListener implements Listener {
@@ -40,17 +42,17 @@ public class SignListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onSignCreate(SignChangeEvent event) {
+    public void onSignCreate(@NotNull SignChangeEvent event) {
         if (plugin.matchesSignVariable(event.getLine(1))) {
             if (!event.getPlayer().hasPermission("randomteleport.sign.create")) {
                 event.getBlock().breakNaturally();
-                plugin.sendMessage(event.getPlayer(), "sign.no-permission.create", "perm", "randomteleport.sign.create");
+                plugin.sendMessage(event.getPlayer(), "sign.no-permission.create", Map.of("perm", "randomteleport.sign.create"));
             } else {
                 String preset = event.getLine(2);
                 if (preset != null) {
-                    plugin.sendMessage(event.getPlayer(), "sign.created", "preset", preset);
+                    plugin.sendMessage(event.getPlayer(), "sign.created", Map.of("preset", preset));
                     if (plugin.getConfig().getString("presets." + preset.toLowerCase()) == null) {
-                        plugin.sendMessage(event.getPlayer(), "error.preset-doesnt-exist", "preset", preset);
+                        plugin.sendMessage(event.getPlayer(), "error.preset-doesnt-exist", Map.of("preset", preset));
                     }
                 }
             }
@@ -58,22 +60,22 @@ public class SignListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onSignDestroy(BlockBreakEvent event) {
+    public void onSignDestroy(@NotNull BlockBreakEvent event) {
         if (event.getBlock().getType().name().contains("SIGN")) {
             Sign sign = (Sign) event.getBlock().getState();
             if (plugin.matchesSignVariable(sign.getLine(1))) {
                 if (!event.getPlayer().hasPermission("randomteleport.sign.destroy")) {
                     event.setCancelled(true);
-                    plugin.sendMessage(event.getPlayer(), "sign.no-permission.destroy", "perm", "randomteleport.sign.destroy");
+                    plugin.sendMessage(event.getPlayer(), "sign.no-permission.destroy", Map.of("perm", "randomteleport.sign.destroy"));
                 } else {
-                    plugin.sendMessage(event.getPlayer(), "sign.destroyed", "preset", sign.getLine(2));
+                    plugin.sendMessage(event.getPlayer(), "sign.destroyed", Map.of("preset", sign.getLine(2)));
                 }
             }
         }
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onSignClick(PlayerInteractEvent event) {
+    public void onSignClick(@NotNull PlayerInteractEvent event) {
         if (event.getHand() == EquipmentSlot.HAND && event.getAction() == Action.RIGHT_CLICK_BLOCK
                 && event.getClickedBlock() != null && event.getClickedBlock().getType().name().contains("SIGN")) {
             Sign sign = (Sign) event.getClickedBlock().getState();
@@ -81,11 +83,11 @@ public class SignListener implements Listener {
                 String preset = sign.getLine(2).toLowerCase();
                 if (event.getPlayer().hasPermission("randomteleport.sign.preset." + preset)) {
                     if (plugin.getConfig().getString("presets." + preset) == null) {
-                        plugin.sendMessage(event.getPlayer(), "error.preset-doesnt-exist", "preset", preset);
+                        plugin.sendMessage(event.getPlayer(), "error.preset-doesnt-exist", Map.of("preset", preset));
                     } else {
                         for (RandomSearcher searcher : plugin.getRunningSearchers().values()) {
                             if (searcher.getTargets().contains(event.getPlayer())) {
-                                plugin.sendMessage(event.getPlayer(), "error.already-searching", "preset", preset);
+                                plugin.sendMessage(event.getPlayer(), "error.already-searching", Map.of("preset", preset));
                                 return;
                             }
                         }
@@ -93,14 +95,14 @@ public class SignListener implements Listener {
                         try {
                             plugin.runPreset(plugin.getServer().getConsoleSender(), preset, event.getPlayer(), event.getClickedBlock().getLocation());
                         } catch (IllegalArgumentException e) {
-                            plugin.sendMessage(event.getPlayer(), "error.preset-invalid", "preset", preset);
+                            plugin.sendMessage(event.getPlayer(), "error.preset-invalid", Map.of("preset", preset));
                             plugin.getLogger().log(Level.SEVERE, "Error while parsing preset " + preset, e);
                         }
                     }
                 } else {
                     plugin.sendMessage(event.getPlayer(), "sign.no-permission.use",
-                            "preset", preset,
-                            "perm", "randomteleport.sign.use"
+                            Map.of("preset", preset,
+                            "perm", "randomteleport.sign.use")
                     );
                 }
             }

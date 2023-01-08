@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 public class GriefDefenderHook implements ProtectionHook {
 
@@ -23,7 +24,7 @@ public class GriefDefenderHook implements ProtectionHook {
     }
 
     @Override
-    public boolean canBuild(Player player, Location location) {
+    public boolean canBuild(Player player, @NotNull Location location) {
         return canBuild(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 
@@ -32,7 +33,7 @@ public class GriefDefenderHook implements ProtectionHook {
         return canBuild(world, chunkX * 16, world.getSeaLevel(), chunkZ * 16);
     }
 
-    private boolean canBuild(World world, int x, int y, int z) {
+    private boolean canBuild(@NotNull World world, int x, int y, int z) {
         if (GriefDefender.getCore().isEnabled(world.getUID())) {
             ClaimManager claimManager = GriefDefender.getCore().getClaimManager(world.getUID());
             if (claimManager == null) {

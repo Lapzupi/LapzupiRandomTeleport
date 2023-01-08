@@ -7,39 +7,41 @@ import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.popcraft.chunkyborder.BorderData;
 import org.popcraft.chunkyborder.ChunkyBorder;
+import org.popcraft.chunkyborder.ChunkyBorderProvider;
 
 public class ChunkyBorderHook implements WorldborderHook {
-    private final ChunkyBorder plugin;
+    private final ChunkyBorder chunkyBorder;
 
     public ChunkyBorderHook() {
-        this.plugin = (ChunkyBorder) Bukkit.getPluginManager().getPlugin("ChunkyBorder");
+        this.chunkyBorder = ChunkyBorderProvider.get();
+
     }
 
     @Override
     public Plugin getPlugin() {
-        return this.plugin;
+        return Bukkit.getPluginManager().getPlugin("ChunkyBorder");
     }
 
     @Override
     public Location getCenter(World world) {
-        BorderData borderData = plugin.getBorders().get(world.getName());
+        BorderData borderData = chunkyBorder.getBorders().get(world.getName());
         return new Location(world, borderData.getCenterX(),0D,borderData.getCenterZ());
     }
 
     @Override
     public double getBorderRadius(World world) {
-        BorderData borderData = plugin.getBorders().get(world.getName());
+        BorderData borderData = chunkyBorder.getBorders().get(world.getName());
         return borderData.getRadiusX();
     }
 
     @Override
     public boolean isInsideBorder(Location location) {
-        BorderData borderData = plugin.getBorders().get(location.getWorld().getName());
+        BorderData borderData = chunkyBorder.getBorders().get(location.getWorld().getName());
         return borderData.getBorder().isBounding(location.getBlockX(),location.getBlockZ());
     }
 
     @Override
     public String getPluginName() {
-        return plugin.getName();
+        return "ChunkyBorder";
     }
 }

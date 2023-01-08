@@ -1,0 +1,37 @@
+plugins {
+    id 'de.themoep.randomteleport.java-conventions'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+dependencies {
+    implementation project(':randomteleport-api')
+    implementation project(':randomteleport-hook')
+    implementation project(':chunkyborder')
+    implementation project(':worldguard-7')
+    implementation project(':griefdefender')
+    compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
+    compileOnly 'me.clip:placeholderapi:2.11.2'
+}
+
+group = 'de.themoep.randomteleport.randomteleport-plugin'
+description = 'randomteleport-plugin'
+
+//TODO TEMP BYPASS, DIRECTLY SET PROJECT VERSION IN THE PLUGIN.YML
+//TODO Not a solution, just making it work for now.
+//processResources {
+//    def props = [version: rootProject.version]
+//    inputs.properties props
+//    filteringCharset 'UTF-8'
+//    filesMatching('plugin.yml') {
+//        expand props
+//    }
+//}
+
+shadowJar {
+    archiveBaseName.set('RandomTeleport')
+    archiveClassifier.set('')
+    archiveVersion.set('')
+    relocate 'io.papermc.lib', 'de.themoep.randomteleport.libs.paperlib'
+    relocate 'de.themoep.utils.lang', 'de.themoep.randomteleport.libs.lang'
+}
+

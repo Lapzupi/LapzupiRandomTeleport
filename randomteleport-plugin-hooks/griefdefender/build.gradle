@@ -1,0 +1,13 @@
+
+plugins {
+    id 'de.themoep.randomteleport.java-conventions'
+}
+
+dependencies {
+    implementation project(':randomteleport-hook')
+    compileOnly 'com.griefdefender:api:2.1.0-20220122.032038-5'
+    compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
+}
+
+group = 'de.themoep.randomteleport.pluginhook'
+description = 'griefdefender'
