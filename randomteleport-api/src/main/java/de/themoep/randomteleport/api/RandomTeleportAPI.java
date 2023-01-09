@@ -26,7 +26,7 @@ import org.bukkit.entity.Player;
 import java.util.concurrent.CompletableFuture;
 
 public interface RandomTeleportAPI<T extends Searcher, R extends Validator<T>> {
-
+    
     /**
      * Returns a random Location
      *
