@@ -513,7 +513,7 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI<Rand
     }
     
     @Override
-    public void runPreset(final @NotNull CommandSender sender, final Player player, final String preset, final Location center) {
+    public void runPreset(final @NotNull CommandSender sender, final Player target, final String preset, final Location center) {
         if (!sender.hasPermission("randomteleport.presets." + preset)) {
             sendMessage(sender, "error.no-permission.preset",
                 Map.of("preset", preset, "perm",
@@ -525,8 +525,17 @@ public class RandomTeleport extends JavaPlugin implements RandomTeleportAPI<Rand
             sendMessage(sender, "error.preset-doesnt-exist", Map.of("preset", preset));
             return;
         }
+    
+        if(sender == target) {
+            for (RandomSearcher searcher : getRunningSearchers().values()) {
+                if (searcher.getTargets().contains(target)) {
+                    sendMessage(sender, "error.already-searching", Map.of("preset", preset));
+                    return;
+                }
+            }
+        }
         
-        runPreset(sender, preset, player, center);
+        runPreset(sender, preset, target, center);
     }
     
     private boolean presetExistsInConfig(String preset) {
