@@ -137,6 +137,6 @@ public class RandomTeleportCommand implements CommandExecutor {
         } else if (sender instanceof BlockCommandSender blockCommandSender) {
             return blockCommandSender.getBlock().getLocation();
         }
-        return new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
+        return new Location(Bukkit.getWorlds().getFirst(), 0, 0, 0);
     }
 }
